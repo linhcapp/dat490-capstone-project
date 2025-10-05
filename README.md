@@ -1,4 +1,4 @@
-# 🏈 College Football Fraud Score: Detecting Overrated Teams with Machine Learning
+# 🏈 College Football: Detecting Overrated (Fraud) Teams
 
 ## 📘 Overview
 
@@ -27,9 +27,7 @@ The merged dataset spans **2014–2024**, covering over **1000 team-seasons** wi
 
 ### 2\. **Methods Summary**
 
-* EDA: Explore correlations between AP ranks, win percentage, and efficiency metrics. 
+* EDA: Explore correlations between AP ranks, win percentage, and efficiency metrics.
 * Clustering (KMeans + PCA): Identify groups such as elite, contender, and overvalued teams.
-* Fraud Score Construction: Combine standardized perception and performance metrics.  
+* Fraud Score Construction: Combine standardized perception and performance metrics.
 * Regression Models: Validate the Fraud Score and assess prediction accuracy.
-
-
