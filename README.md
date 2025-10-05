@@ -1,80 +1,116 @@
-# \# 🏈 College Football Fraud Score: Detecting Overrated Teams with Machine Learning
+# 🏈 College Football Fraud Score: Detecting Overrated Teams with Machine Learning
 
-# 
+## 📘 Overview
+This project develops a **data-driven framework** to identify *“fraud”* teams in college football — teams whose rankings and public perception exceed their on-field performance.  
 
-# \## 📘 Overview
+The study was conducted as part of the **DAT 490 Capstone Project** at **Arizona State University** (Fall 2025).
 
-# This project develops a data-driven framework to identify “fraud” teams in college football — teams whose rankings and public perception exceed their on-field performance.  
+---
 
-# 
+## 🧠 Methodology
 
-# This research was completed as part of the \*\*DAT 490 Capstone Project\*\* at \*\*Arizona State University\*\*, Fall 2025.
+### 1. **Data Collection**
+We combined data from two major public sources:
+- [College Football Data API](https://collegefootballdata.com)  
+- [Sports-Reference.com](https://sports-reference.com/cfb)
 
-# 
+The merged dataset spans **2014–2024**, covering over **1000 team-seasons** with key metrics such as:
+- Strength of Schedule (SOS)  
+- Margin of Victory (MOV)  
+- Simple Rating System (SRS)  
+- Elo Ratings  
+- AP Poll Rankings  
 
-# ---
+### 2. **Feature Engineering & Standardization**
+- Standardized all numeric variables using **z-scores** within each season.  
+- Created composite indices for:
+  - **Perception** → based on AP rankings and excitement metrics  
+  - **Performance** → based on efficiency and dominance metrics  
+- Defined the **Fraud Score** as:  
 
-# 
+  \[
+  \text{Fraud Score} = \text{Perception} - \text{Performance}
+  \]
 
-# \## 🧠 Methodology
+  Positive values indicate *overrated (fraudulent)* teams; negative values indicate *underrated* teams.
 
-# 
+### 3. **Unsupervised Learning (Clustering)**
+- Applied **KMeans Clustering** (season by season) to group teams into performance tiers:
+  - **Cluster 0:** Elite Contenders  
+  - **Cluster 1:** Solid Performers  
+  - **Cluster 2:** Underperformers / Frauds  
+- Evaluated clustering quality using **Silhouette Scores** and **Inertia (Elbow) plots**.  
+- Used **Principal Component Analysis (PCA)** for 2D visualization of clusters.
 
-# \### 1. \*\*Data Collection\*\*
+### 4. **Fraud Labeling & Classification**
+- Constructed **empirical performance thresholds** based on the average of historical top-10 teams in each season.  
+- Assigned teams as **“Elite”**, **“Borderline”**, or **“Fraud”** based on threshold comparisons and AP Rank deviation.  
+- Trained a **Random Forest Classifier** using independent performance metrics (WinPct, SRS, MOV, SOS, Elo) to evaluate whether the fraud labeling aligns with actual outcomes.
 
-# We combined data from multiple sources:
+---
 
-# \- \[College Football Data API](https://collegefootballdata.com)
+## 🧩 Repository Structure
 
-# \- \[Sports-Reference.com](https://sports-reference.com/cfb)
+```
+📁 CollegeFootball-FraudScore/
+│
+├── data/
+│   ├── raw/                      # Original CSVs from Sports Reference & CFBD API
+│   ├── processed/                # Cleaned & merged datasets (final_merged.csv)
+│
+├── notebooks/
+│   ├── 01_data_cleaning.ipynb
+│   ├── 02_feature_engineering.ipynb
+│   ├── 03_clustering_pca.ipynb
+│   ├── 04_random_forest.ipynb
+│
+├── src/
+│   ├── utils.py                  # Helper functions for cleaning & feature creation
+│   ├── clustering.py             # KMeans + PCA visualization
+│   ├── modeling.py               # Random Forest classifier and metrics
+│
+├── results/
+│   ├── figures/                  # Plots: threshold charts, PCA, elbow curves
+│   ├── tables/                   # Cluster summaries and fraud score tables
+│
+├── README.md                     # Project documentation
+├── requirements.txt              # Dependencies list
+└── LICENSE
+```
 
-# 
+---
 
-# The merged dataset spans \*\*2014–2024\*\*, covering over \*\*1000 teams\*\* and metrics for \*\*strength of schedule (SOS)\*\*, \*\*margin of victory (MOV)\*\*, \*\*Simple Rating System (SRS)\*\*, \*\*Elo ratings\*\*, and \*\*AP Poll ranks\*\*.
+## 📊 Example Outputs
 
-# 
+- **Elbow & Silhouette Plots:** Helped determine the optimal number of clusters (k ≈ 3).  
+- **PCA Visualization:** Showed clear separation between elite contenders, average teams, and underperformers.  
+- **Random Forest Feature Importance:** Highlighted WinPct, MOV, and SRS as the strongest predictors of fraud labels.
 
-# \### 2. \*\*Feature Engineering \& Standardization\*\*
+---
 
-# \- Standardized all numeric variables (z-scores) by season.
+## 🧾 Key Findings
 
-# \- Computed separate \*\*Perception\*\* and \*\*Performance\*\* composites.
+- Fraud Scores successfully distinguished between **overvalued teams (e.g., Texas A&M 2019, Clemson 2022)** and **legitimate contenders (e.g., Ohio State 2014, LSU 2019)**.  
+- Statistical validation showed strong alignment between **model predictions** and **expert consensus**.  
+- The model generalizes across seasons, providing a foundation for automated ranking fairness audits.
 
-# \- Defined \*\*Fraud Score = Perception – Performance\*\* (positive → overrated, negative → underrated).
+---
 
-# 
+## 🧩 Future Work
+- Incorporate advanced efficiency metrics (e.g., **SP+**, **EPA/play**, **Massey Ratings**) for deeper contextual modeling.  
+- Extend framework to real-time fraud detection during the ongoing season.  
+- Compare machine-driven “Fraud Scores” to human poll updates weekly to detect media overreactions.
 
-# \### 3. \*\*Unsupervised Learning (Clustering)\*\*
+---
 
-# \- Applied \*\*KMeans\*\* clustering by season to group teams into tiers:
+## 👥 Contributors
+- **Hai Ta Tuan** – Data Engineering, Modeling, Report Writing  
+- **Linh Luong**, **Khanh Nguyen**, **Nam Tran** – EDA, Feature Engineering, Visualization
 
-# &nbsp; - \*\*Cluster 0:\*\* Elite Contenders  
+---
 
-# &nbsp; - \*\*Cluster 1:\*\* Solid Performers  
-
-# &nbsp; - \*\*Cluster 2:\*\* Underperformers / Frauds
-
-# \- Evaluated cluster validity using \*\*silhouette scores\*\* and \*\*inertia plots\*\*.
-
-# \- Visualized results via \*\*PCA\*\* for dimensionality reduction.
-
-# 
-
-# \### 4. \*\*Fraud Labeling \& Classification\*\*
-
-# \- Constructed empirical performance thresholds based on historical top-10 teams.
-
-# \- Labeled teams as \*\*“Fraud”\*\* based on constructed thresholds and AP Rank.
-
-# \- Trained a \*\*Random Forest Classifier\*\* using independent features different from features used to construct fraud labels to evaluate the effectiveness of fraud labels.
-
-# 
-
-# ---
-
-# 
-
-# \## 🧩 Repository Structure
-
-
-
+## 📚 References
+- [College Football Data API](https://collegefootballdata.com/about)  
+- [Sports Reference](https://www.sports-reference.com/cfb/)  
+- Coleman et al. (2010), *Journal of Sports Economics*, “Voter Bias in the Associated Press College Football Poll”  
+- Stone & Rod (2016), *Marquette Sports Law Review*, “Bias in the College Football Playoff Selection Process”
